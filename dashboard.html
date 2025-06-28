@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | Umumbiri Table Banking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js "></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js "></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js "></script>
+
+  <!-- Firebase Config -->
+  <script src="firebase-config.js"></script>
+
+  <!-- Sidebar -->
+  <aside class="fixed inset-y-0 left-0 w-64 p-6 bg-white dark:bg-gray-800 shadow-md h-full z-10">
+    <h2 class="text-xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500">TableBanking</h2>
+    <nav class="space-y-2">
+      <button onclick="showSection('dashboard')" class="block w-full text-left py-2 px-4 rounded-lg hover:bg-purple-100 dark:hover:bg-gray-700 active:bg-purple-600">Dashboard</button>
+      <button onclick="showSection('attendance')" class="block w-full text-left py-2 px-4 rounded-lg hover:bg-purple-100 dark:hover:bg-gray-700">Attendance</button>
+      <button onclick="showSection('loans')" class="block w-full text-left py-2 px-4 rounded-lg hover:bg-purple-100 dark:hover:bg-gray-700">Loans</button>
+      <button onclick="showSection('admin')" class="block w-full text-left py-2 px-4 rounded-lg hover:bg-purple-100 dark:hover:bg-gray-700 hidden" id="adminNav">Admin Panel</button>
+      <button onclick="showSection('secretary')" class="block w-full text-left py-2 px-4 rounded-lg hover:bg-purple-100 dark:hover:bg-gray-700 hidden" id="secretaryNav">Secretary</button>
+      <button onclick="logout()" class="mt-4 block w-full text-left py-2 px-4 text-red-500 hover:text-red-700">Logout</button>
+    </nav>
+    <div class="mt-auto pt-6">
+      <button onclick="toggleDarkMode()" class="flex items-center space-x-2">
+        <svg id="darkModeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+        <span id="darkModeText">Dark Mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="ml-64 p-6 min-h-screen">
+    <section id="dashboard" class="content-section active">
+      <h1 class="text-2xl font-bold mb-6">Member Dashboard</h1>
+      <p>Welcome back! Here’s your current loan status and next steps.</p>
+    </section>
+
+    <section id="attendance" class="content-section hidden">
+      <h1 class="text-2xl font-bold mb-6">Mark Attendance</h1>
+      <p>You can mark your attendance only during meeting time.</p>
+      <button onclick="markPresent()" class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Mark Present</button>
+    </section>
+
+    <section id="loans" class="content-section hidden">
+      <h1 class="text-2xl font-bold mb-6">Loans</h1>
+      <p>You currently have no active loans.</p>
+    </section>
+
+    <section id="admin" class="content-section hidden">
+      <h1 class="text-2xl font-bold mb-6">Admin Dashboard</h1>
+      <p>This section allows you to manage members, announcements, and loans.</p>
+    </section>
+
+    <section id="secretary" class="content-section hidden">
+      <h1 class="text-2xl font-bold mb-6">Secretary Dashboard</h1>
+      <p>Post meeting minutes and announcements here.</p>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script>
+    const sections = ['dashboard', 'attendance', 'loans', 'admin', 'secretary'];
+
+    function showSection(id) {
+      sections.forEach(sec => {
+        document.getElementById(sec).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+
+      // Show/hide based on role
+      if (window.userRole === 'admin') {
+        document.getElementById('adminNav').classList.remove('hidden');
+        document.getElementById('secretaryNav').classList.add('hidden');
+      } else if (window.userRole === 'secretary') {
+        document.getElementById('secretaryNav').classList.remove('hidden');
+        document.getElementById('adminNav').classList.add('hidden');
+      } else {
+        document.getElementById('adminNav').classList.add('hidden');
+        document.getElementById('secretaryNav').classList.add('hidden');
+      }
+    }
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = 'index.html';
+      });
+    }
+
+    function markPresent() {
+      alert('Your attendance has been submitted.');
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const icon = document.getElementById('darkModeIcon');
+      const text = document.getElementById('darkModeText');
+      if (document.body.classList.contains('dark')) {
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
+        text.textContent = 'Light Mode';
+      } else {
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
+        text.textContent = 'Dark Mode';
+      }
+    }
+  </script>
+</body>
+</html>
