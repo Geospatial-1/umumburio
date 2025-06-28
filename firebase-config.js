@@ -1,11 +1,11 @@
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
+  apiKey: "AIzaSyCzfi2IPm-QgaHnYQTMa721NWmLXTKWtYg",
+  authDomain: "umumbiro-welfare.firebaseapp.com",
+  projectId: "umumbiro-welfare",
+  storageBucket: "umumbiro-welfare.appspot.com",
   messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  appId: "551201713886"
 };
 
 // Initialize Firebase
